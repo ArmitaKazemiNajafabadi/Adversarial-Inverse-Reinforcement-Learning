@@ -32,35 +32,6 @@ You can always find out all the configurable values by running:
 
     python -m imitation.scripts.<script> print_config
 
-Run BC on the ``CartPole-v1`` environment with a pre-trained PPO policy as expert
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. note:: Here the cartpole environment is specified via a named configuration.
-
-.. code-block:: bash
-
-    python -m imitation.scripts.train_imitation bc with \
-        cartpole \
-        demonstrations.n_expert_demos=50 \
-        bc.train_kwargs.n_batches=2000 \
-        expert.policy_type=ppo \
-        expert.loader_kwargs.path=tests/testdata/expert_models/cartpole_0/policies/final/model.zip
-
-50 expert demonstrations are sampled from the PPO policy that is included in the testdata folder.
-2000 batches are enough to train a good policy.
-
-Run DAgger on the ``CartPole-v0`` environment with a random policy as expert
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. code-block:: bash
-
-    python -m imitation.scripts.train_imitation dagger with \
-        cartpole \
-        dagger.total_timesteps=2000 \
-        demonstrations.n_expert_demos=10 \
-        expert.policy_type=random
-
-This will not produce any meaningful results, since a random policy is not a good expert.
 
 
 Run AIRL on the ``MountainCar-v0`` environment with a expert from the HuggingFace model hub
@@ -77,20 +48,6 @@ Run AIRL on the ``MountainCar-v0`` environment with a expert from the HuggingFac
 .. note:: The small number of total timesteps is only for demonstration purposes and will not produce a good policy.
 
 
-Run GAIL on the ``seals/Swimmer-v0`` environment
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Here we do not use the named configuration for the seals environment, but instead specify the gym_id directly.
-The ``seals:`` prefix ensures that the seals package is imported and the environment is registered.
-
-.. note:: The Swimmer environment needs `mujoco_py` to be installed.
-
-.. code-block:: bash
-
-    python -m imitation.scripts.train_adversarial gail with \
-            environment.gym_id="seals:seals/Swimmer-v0" \
-            total_timesteps=5000 \
-            demonstrations.n_expert_demos=50
 
 
 Train an expert and save the rollouts explicitly, then train a policy on the saved rollouts
@@ -294,19 +251,7 @@ Call the algorithm scripts like this:
 +---------------------------------+------------------------------+----------+
 |  algorithm                      | script                       |  command |
 +=================================+==============================+==========+
-| BC                              | train_imitation              |  bc      |
-+---------------------------------+------------------------------+----------+
-| DAgger                          | train_imitation              |  dagger  |
-+---------------------------------+------------------------------+----------+
 | AIRL                            | train_adversarial            |  airl    |
-+---------------------------------+------------------------------+----------+
-| GAIL                            | train_adversarial            |  gail    |
-+---------------------------------+------------------------------+----------+
-| Preference Comparison           | train_preference_comparisons |  -       |
-+---------------------------------+------------------------------+----------+
-| MCE IRL                         | none                         |  -       |
-+---------------------------------+------------------------------+----------+
-| Density Based Reward Estimation | none                         |  -       |
 +---------------------------------+------------------------------+----------+
 
 Utility Scripts
