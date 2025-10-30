@@ -1,28 +1,16 @@
 [![CircleCI](https://circleci.com/gh/HumanCompatibleAI/imitation.svg?style=svg)](https://circleci.com/gh/HumanCompatibleAI/imitation)
 [![Documentation Status](https://readthedocs.org/projects/imitation/badge/?version=latest)](https://imitation.readthedocs.io/en/latest/?badge=latest)
-[![codecov](https://codecov.io/gh/HumanCompatibleAI/imitation/branch/master/graph/badge.svg)](https://codecov.io/gh/HumanCompatibleAI/imitation)
 [![PyPI version](https://badge.fury.io/py/imitation.svg)](https://badge.fury.io/py/imitation)
 
-# Imitation Learning Baseline Implementations
+# Adversarial Inverse Reinforcement Learning Baseline Implementations
 
-This project aims to provide clean implementations of imitation and reward learning algorithms.
-Currently, we have implementations of the algorithms below. 'Discrete' and 'Continous' stands for whether the algorithm supports discrete or continuous action/state spaces respectively.
-
-| Algorithm (+ link to paper)                                                                                                       | API Docs                                                                                                                 | Discrete | Continuous |
-|-----------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|----------|------------|
-| Behavioral Cloning                                                                                                                | [`algorithms.bc`](https://imitation.readthedocs.io/en/latest/algorithms/bc.html)                                         | ✅        | ✅          |
-| [DAgger](https://arxiv.org/pdf/1011.0686.pdf)                                                                                     | [`algorithms.dagger`](https://imitation.readthedocs.io/en/latest/algorithms/dagger.html)                                 | ✅        | ✅          |
-| Density-Based Reward Modeling                                                                                                     | [`algorithms.density`](https://imitation.readthedocs.io/en/latest/algorithms/density.html)                               | ✅        | ✅          |
-| [Maximum Causal Entropy Inverse Reinforcement Learning](https://www.cs.cmu.edu/~bziebart/publications/maximum-causal-entropy.pdf) | [`algorithms.mce_irl`](https://imitation.readthedocs.io/en/latest/algorithms/mce_irl.html)                               | ✅        | ❌          |
-| [Adversarial Inverse Reinforcement Learning](https://arxiv.org/abs/1710.11248)                                                    | [`algoritms.airl`](https://imitation.readthedocs.io/en/latest/algorithms/airl.html)                                      | ✅        | ✅          |
-| [Generative Adversarial Imitation Learning](https://arxiv.org/abs/1606.03476)                                                     | [`algorithms.gail`](https://imitation.readthedocs.io/en/latest/algorithms/gail.html)                                     | ✅        | ✅          |
-| [Deep RL from Human Preferences](https://arxiv.org/abs/1706.03741)                                                                | [`algorithms.preference_comparisons`](https://imitation.readthedocs.io/en/latest/algorithms/preference_comparisons.html) | ✅        | ✅          |
-| [Soft Q Imitation Learning](https://arxiv.org/abs/1905.11108)                                                                     | [`algorithms.sqil`](https://imitation.readthedocs.io/en/latest/algorithms/sqil.html)                                     | ✅        | ❌          |
+This project aims to provide clean implementations of the Adversarial Inverse Reinforcement Learning (AIRL) algorithm.
+The algorithm supports discrete action spaces.
 
 
-You can find [the documentation here](https://imitation.readthedocs.io/en/latest/).
+| [Adversarial Inverse Reinforcement Learning](https://arxiv.org/abs/1710.11248)                                                    | [`algoritms.airl`](https://imitation.readthedocs.io/en/latest/algorithms/airl.html)                                      | 
 
-You can read the latest benchmark results [here](https://imitation.readthedocs.io/en/latest/main-concepts/benchmark_summary.html).
+You can find the original [documentation here](https://imitation.readthedocs.io/en/latest/).
 
 ## Installation
 
@@ -95,9 +83,6 @@ For more information on how to configure Sacred CLI options, see the [Sacred doc
 
 See [examples/quickstart.py](examples/quickstart.py) for an example script that loads CartPole-v1 demonstrations and trains BC, GAIL, and AIRL models on that data.
 
-### Density reward baseline
-
-We also implement a density-based reward baseline. You can find an [example notebook here](docs/tutorials/7_train_density.ipynb).
 
 # Citations (BibTeX)
 
