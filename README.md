@@ -232,8 +232,17 @@ python airl_pipeline.py --env CartPole-v0 --airl-steps 2500000 --demo-episodes 1
 
 **Expected results:**
 - Expert reward: ~500
-- Learner before: ~20-100
+- Learner before: ~40-100
 - Learner after: ~450-500
+
+```bash
+python airl_pipeline.py --env HalfCheetah-v1 --airl-steps 2000000 --demo-episodes 100
+```
+**Expected results:**
+- Expert reward: ~1630-1710
+- Learner before: ~0
+- Learner after: ~1000-1710
+
 
 **Use case:** Production-quality imitation learning.
 
@@ -243,6 +252,8 @@ Adjust AIRL hyperparameters:
 
 ```bash
 python airl_pipeline.py \
+    --seed 32
+    --n-envs 10
     --env CartPole-v0 \
     --airl-steps 500000 \
     --demo-batch-size 1024 \
@@ -264,7 +275,7 @@ python airl_pipeline.py --env CartPole-v0 --n-envs 16 --airl-steps 1000000
 
 **Use case:** Faster training on multi-core systems.
 
-## Understanding the Output
+# Understanding the Output
 
 ### Stage 1: Environment Setup
 ```
@@ -325,7 +336,7 @@ Improvement: +464.78
 - ✅ Improvement > 80% of gap between before and expert
 - ❌ After training << Expert reward → Need more training steps or demos
 
-## Troubleshooting
+# Troubleshooting
 
 ### Error: Timesteps too low
 ```
@@ -347,7 +358,7 @@ python airl_pipeline.py --env CartPole-v0 --airl-steps 20000
 
 
 
-## Advanced: Loading Custom Experts [Under Development]
+# Advanced: Loading Custom Experts [Under Development]
 
 For environments without pre-trained HuggingFace experts, use the separate loader:
 
@@ -369,7 +380,7 @@ pipeline.setup_airl()
 pipeline.train_airl()
 ```
 
-## Key Concepts
+# Key Concepts
 
 ### Demo Episodes vs Eval Episodes
 
