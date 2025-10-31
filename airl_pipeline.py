@@ -2,6 +2,8 @@
 AIRL Pipeline using HumanCompatibleAI/imitation library.
 Supports vector-based observation environments with pre-trained experts.
 """
+import os
+import sys
 import argparse
 import numpy as np
 import gymnasium as gym
@@ -131,6 +133,7 @@ class AIRLPipeline:
                 "clip_range": 0.1,
                 "vf_coef": 0.1,
                 "n_epochs": 5,
+
             }
         
         # Default AIRL config
@@ -163,6 +166,7 @@ class AIRLPipeline:
             venv=self.venv,
             gen_algo=self.learner,
             reward_net=reward_net,
+           # allow_variable_horizon=True,  # Add this line to prevent extra prints
             **airl_config,
         )
         
@@ -189,10 +193,12 @@ class AIRLPipeline:
             self.learner, self.venv, n_eval_episodes=20
         )
         print(f"Learner reward before: {mean_before:.2f} ± {std_before:.2f}")
-        
+
+        suppress_prints()
         # Train
         print(f"\nTraining for {total_timesteps} timesteps...")
         self.airl_trainer.train(total_timesteps)
+        enable_prints()
         
         # Evaluate after training
         mean_after, std_after = evaluate_policy(
@@ -228,6 +234,12 @@ class AIRLPipeline:
         print("="*60)
         return results
 
+    
+def suppress_prints():
+    sys.stdout = open(os.devnull, 'w')
+
+def enable_prints():
+    sys.stdout = sys.__stdout__ # Restore original stdout
 
 def main():
     parser = argparse.ArgumentParser(description="AIRL Pipeline with Pre-trained Experts")
