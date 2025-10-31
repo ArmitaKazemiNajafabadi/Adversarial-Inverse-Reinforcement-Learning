@@ -2,7 +2,7 @@
 
 Clean, modular implementation of Adversarial Inverse Reinforcement Learning (AIRL) using the [HumanCompatibleAI/imitation](https://github.com/HumanCompatibleAI/imitation) library.
 
-**Under Implementation**
+**Under Development**
 ---
 For environments without pre-trained HuggingFace experts, custom expert training will be added in future versions.
 
