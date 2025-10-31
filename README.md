@@ -2,6 +2,16 @@
 
 Clean, modular implementation of Adversarial Inverse Reinforcement Learning (AIRL) using the [HumanCompatibleAI/imitation](https://github.com/HumanCompatibleAI/imitation) library.
 
+**Under Implementation**
+---
+For environments without pre-trained HuggingFace experts, custom expert training will be added in future versions.
+
+**Currently tested environments**:
+---
+- `CartPole-v0` ✅
+- `HalfCheetah-v1` ✅ (requires `gymnasium[mujoco]`)
+
+---
 ## Features
 
 - **Pre-trained Expert Loading**: Automatically loads pre-trained experts from HuggingFace
@@ -10,13 +20,113 @@ Clean, modular implementation of Adversarial Inverse Reinforcement Learning (AIR
 - **CLI Interface**: Easy configuration without code changes
 - **Vector Observations Only**: Supports standard Gym environments (CartPole, HalfCheetah, etc.)
 
-## Installation
+# Installation & Setup
 
-```bash
-pip install imitation stable-baselines3 gymnasium
+### Windows (Command Prompt)
+
+**First-time setup:**
+
+```batch
+# 1. Install Python 3.12 from python.org (if not installed)
+python --version
+# Should show: Python 3.12.x
+
+# 2. Navigate to your AIRL folder
+cd C:\Users\YourUsername\AIRL
+
+# 3. Create a virtual environment
+python -m venv venv
+
+# 4. Activate environment
+venv\Scripts\activate
+
+# 5. Set version variable
+set SETUPTOOLS_SCM_PRETEND_VERSION_FOR_IMITATION=0.0.0
+
+# 6. Install the package
+pip install -e .
+
+# 7. For MuJoCo environments (HalfCheetah, etc.)
+pip install gymnasium[mujoco]
+
+# 8. Run your first test
+python airl_pipeline.py --env CartPole-v0 
 ```
 
-## Quick Start
+**Subsequent runs:**
+
+```batch
+# 1. Navigate to your AIRL folder
+cd C:\Users\YourUsername\AIRL
+
+# 2. Activate environment (previously installed)
+venv\Scripts\activate
+
+# 3. Run your first test
+python airl_pipeline.py --env CartPole-v0 
+```
+### AWS/Cloud Environments [!! Read the Note !!]
+
+**Note:** Untested - based on typical AWS EC2 setup patterns.
+
+**First-time setup (Amazon Linux 2 / Ubuntu):**
+
+```bash
+# 1. Connect to your EC2 instance
+ssh -i your-key.pem ec2-user@your-instance-ip
+
+# 2. Install Python 3.12 (if not available, use Python 3.11)
+sudo yum update -y                    # Amazon Linux
+# OR
+sudo apt update && sudo apt upgrade   # Ubuntu
+
+# For Amazon Linux 2
+sudo amazon-linux-extras install python3.11 -y
+# OR for Ubuntu
+sudo apt install python3.12 python3.12-venv -y
+
+# 3. Upload your AIRL package to EC2 (from local machine)
+# scp -i your-key.pem -r AIRL/ ec2-user@your-instance-ip:~/
+
+# 4. Navigate to AIRL folder
+cd ~/AIRL
+
+# 5. Create virtual environment
+python3.12 -m venv venv
+# OR
+python3.11 -m venv venv
+
+# 6. Activate environment
+source venv/bin/activate
+
+# 7. Set environment variable
+export SETUPTOOLS_SCM_PRETEND_VERSION_FOR_IMITATION=0.0.0
+
+# 8. Install package
+pip install -e .
+
+# 9. For MuJoCo environments
+pip install gymnasium[mujoco]
+
+# 10. Run test (use nohup for long training)
+nohup python airl_pipeline.py --env CartPole-v0 --demo-episodes 100 --airl-steps 2000000 > training.log 2>&1 &
+```
+
+**Subsequent runs:**
+
+```bash
+ssh -i your-key.pem ec2-user@your-instance-ip
+cd ~/AIRL
+source venv/bin/activate
+export SETUPTOOLS_SCM_PRETEND_VERSION_FOR_IMITATION=0.0.0
+
+# Run in background
+nohup python airl_pipeline.py --env HalfCheetah-v1 --demo-episodes 100 --airl-steps 2000000 > training.log 2>&1 &
+```
+
+
+---
+# Quick Start
 
 ### Basic Usage (Default Settings)
 
@@ -40,19 +150,25 @@ AIRL Pipeline - CartPole-v0
 [2/4] Loading expert policy from HuggingFace
   ✓ Expert loaded | Mean reward: 500.00 ± 0.00
 [3/4] Collecting 60 expert demonstrations
-  ✓ Collected 67 episodes, 33500 transitions
+  ✓ Collected 64 episodes, 32064 transitions
 [4/4] Setting up AIRL trainer
   ✓ AIRL trainer initialized
   → Minimum training timesteps: 8192
 
 Training AIRL (100000 steps)
 ============================================================
-Mean reward before AIRL training: 22.45 ± 8.12
-Training for 100000 timesteps...
-Mean reward after AIRL training: 487.23 ± 15.34
-Improvement: +464.78
+Mean reward before AIRL training:  100.35 ± 14.77
+round: 100%|█████████████████████████████████████████████████████████████████████████████| 6/6 [01:14<00:00, 12.47s/it]
+
+Learner reward after: 44.35 ± 2.52
+Improvement: -56.00
+============================================================
+
+============================================================
+Pipeline complete!
 ============================================================
 ```
+'Note that this run results in an under-trained learner model and is just for demonstration.'
 
 ## CLI Parameters
 
@@ -60,7 +176,7 @@ Improvement: +464.78
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `--env` | `CartPole-v0` | Gym environment name (CartPole-v0, CartPole-v1) |
+| `--env` | `CartPole-v0` | Gym environment name (CartPole-v0) |
 | `--seed` | `42` | Random seed for reproducibility |
 | `--n-envs` | `8` | Number of parallel environments |
 
@@ -91,7 +207,7 @@ Improvement: +464.78
 
 **What it means:** Used only for measuring reward before/after training. More episodes = more accurate estimate.
 
-## Usage Examples
+# Usage Examples
 
 ### Example 1: Quick Test Run
 
@@ -100,15 +216,18 @@ Test AIRL with minimal training:
 ```bash
 python airl_pipeline.py --env CartPole-v0 --airl-steps 50000 --demo-episodes 30
 ```
+```bash
+python airl_pipeline.py --env HalfCheetah-v1 --airl-steps 50000 --demo-episodes 30
+```
 
 **Use case:** Fast prototyping, debugging, or verifying setup works.
 
 ### Example 2: Full Training to Match Expert
 
-Train until learner matches expert performance:
+Train until the learner matches the expert performance:
 
 ```bash
-python airl_pipeline.py --env CartPole-v0 --airl-steps 2000000 --demo-episodes 100
+python airl_pipeline.py --env CartPole-v0 --airl-steps 2500000 --demo-episodes 100
 ```
 
 **Expected results:**
@@ -118,7 +237,7 @@ python airl_pipeline.py --env CartPole-v0 --airl-steps 2000000 --demo-episodes 1
 
 **Use case:** Production-quality imitation learning.
 
-### Example 3: Custom AIRL Configuration
+### Example 3: Custom AIRL Configuration 
 
 Adjust AIRL hyperparameters:
 
@@ -135,7 +254,7 @@ python airl_pipeline.py \
 
 **Use case:** Hyperparameter tuning for specific environments.
 
-### Example 4: More Parallel Environments
+### Example 4: More Parallel Environments [Not Tested]
 
 Speed up training with more parallel environments:
 
@@ -179,7 +298,7 @@ python airl_pipeline.py --env CartPole-v0 --n-envs 16 --airl-steps 1000000
   → Minimum training timesteps: 8192
 ```
 - Initializes learner policy (untrained PPO)
-- Creates reward network for AIRL
+- Creates a reward network for AIRL
 - Shows minimum timesteps required (auto-calculated)
 
 ### Training & Evaluation
@@ -218,20 +337,17 @@ AssertionError: No updates (need at least 16384 timesteps, have only total_times
 python airl_pipeline.py --env CartPole-v0 --airl-steps 20000
 ```
 
-### Performance doesn't match expert
+### Performance doesn't match the expert
 
 **Possible causes:**
 1. **Not enough training**: Increase `--airl-steps` (try 1-2M)
 2. **Not enough demos**: Increase `--demo-episodes` (try 100+)
 3. **Evaluation variance**: Increase `--n-eval-episodes` to 100+
 
-### Environment not supported
 
-Currently supported: `CartPole-v0`, `CartPole-v1`
 
-For other environments (HalfCheetah, etc.), see `load_cheetah_expert.py` for training custom experts.
 
-## Advanced: Loading Custom Experts
+## Advanced: Loading Custom Experts [Under Development]
 
 For environments without pre-trained HuggingFace experts, use the separate loader:
 
